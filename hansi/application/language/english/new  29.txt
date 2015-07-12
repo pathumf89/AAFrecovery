@@ -1,0 +1,11 @@
+robibpdb/5!Cora#prod'
+
+join UTILITY_BILL_PDB
+
+
+BATCH_NO             BILL_NUMBER          BATCH_CODE            SCROLL_NO TRANSACTION_ID       PDB_AMOUNT  GOVT_DUTY STATUS CREATED_ON CREATED_BY           MODIFIED_NO MODIFIED_BY        
+-------------------- -------------------- -------------------- ---------- -------------------- ---------- ---------- ------ ---------- -------------------- ----------- --------------------
+2                    225038320            NA                       658807 20141015000057             1046         52 N      15-OCT-14  BPDB                 15-OCT-14   BPDB                 
+2                    225045490            NA                       658808 20141015000058              236         12 N      15-OCT-14  BPDB                 15-OCT-14   BPDB                 
+
+

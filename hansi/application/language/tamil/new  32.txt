@@ -1,0 +1,44 @@
+select
+  sub1.*,
+  sub1.Tx_amount * 0.0025 as Dist_Commission,
+  sub1.Tx_count * 0.91 as Robi_Commission
+from (
+  m.merchant_alias as Distributor, 
+select 
+  mb.branch_alias as DSR,
+  tl.initiator_alias as Agent,
+  case when tl.initiator_cr_dr_type = 1 then 'DR' else 'CR' end as DR_CR,
+  case 
+    when tl.tx_status = 1 then 'Success' 
+    when tl.tx_status = 2 then 'Reversed'
+    when tl.tx_status = 3 then 'Success Reversed'
+    when tl.tx_status = 4 then 'Success_Pending' 
+    else to_char(tl.tx_status)
+  end as Status,
+  tt.description as Tx_Type,
+  count(*) as Tx_Count, 
+  sum(tl.amount) as Tx_Amount,
+  sum( case
+    when tt.tx_type_code = 'TX_BPDB' and (tl.tx_status=1 or tl.tx_status=4) then
+      case 
+        when tl.amount < 400 then 5
+        when tl.amount < 1000 then 10
+        when tl.amount < 1500 then 15
+        when tl.amount < 2000 then 20
+        else 25
+      end
+    else 0
+  end ) as Agent_Commission
+from 
+  robiservice.ew_transaction_log tl, robiservice.ew_tx_type tt, robiservice.ew_wallet_owner wo, robiservice.ew_agent a
+  left outer join robiservice.ew_merch_branch mb on mb.branch_id=a.branch_id
+  left outer join robiservice.ew_merchant m on m.merchant_id =a.merchant_id
+where   
+  tt.tx_type_id=tl.tx_type_id and wo.wallet_id=tl.initiator_wallet_id and
+  a.agent_id=wo.owner_id and (m.merchant_alias like '880%' or m.merchant_alias is null) and
+  tl.tx_date >= '1-dec-2014' and tl.tx_date < '1-jan-2015'
+group by 
+  m.merchant_alias, mb.branch_alias, tl.initiator_alias, 
+  tl.initiator_cr_dr_type, tl.tx_status, tt.description
+order by Tx_Amount desc, Tx_Count desc
+) as sub1 order by 9 desc

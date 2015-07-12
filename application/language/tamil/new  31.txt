@@ -1,0 +1,6 @@
+1. Archive Logs + RMAN
+2. Get ASM+ Free Space
+3. Monitor DB
+4. Scan IP
+5. TNS Listener Poisoning
+6. Restore using Export Backup/ RMAN
